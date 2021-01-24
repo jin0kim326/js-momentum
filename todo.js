@@ -4,32 +4,86 @@ const toDoList = document.querySelector(".js-toDoList");
 
 const TODOS_LS = "toDos";
 
-function paintToDo(text) {
-  const li = document.createElement("li");
-  const delBtn = document.createElement("button");
-  delBtn.innerText = "X";
-  const span = document.createElement("span");
-  span.innerText = text;
-  li.appendChild(delBtn);
-  li.appendChild(span);
-  toDoList.append(li);
+let toDos = [];
+
+function deleteToDo(event) {
+  const btn = event.target.parentNode;
+  const li = btn.parentNode;
+  toDoList.removeChild(li);
+  const cleanToDos = toDos.filter(function (toDo) {
+    return toDo.id !== parseInt(li.id);
+  });
+  toDos = cleanToDos;
+  saveToDos();
 }
 
-function handelSubmit(event) {
+function saveToDos() {
+  localStorage.setItem(TODOS_LS, JSON.stringify(toDos));
+}
+
+function paintToDo(text) {
+  const li = document.createElement("li");
+  li.setAttribute("class", "toDoItem");
+  li.addEventListener("mouseover", (event) => {
+    const target = event.target;
+    const delBtn = target.lastChild;
+
+    if (!target.matches(".toDoItem")) {
+      return;
+    }
+    delBtn.classList.add("visibility");
+  });
+
+  li.addEventListener("mouseleave", (event) => {
+    const target = event.target;
+    const delBtn = target.lastChild;
+
+    if (!target.matches(".toDoItem")) {
+      return;
+    }
+
+    delBtn.classList.remove("visibility");
+  });
+  const delBtn = document.createElement("button");
+  delBtn.setAttribute("class", "toDoItem__delBtn");
+  const span = document.createElement("span");
+  span.setAttribute("class", "toDoList__text");
+  const newId = toDos.length + 1;
+  delBtn.innerHTML = `<i class="fas fa-times"></i>`;
+  delBtn.addEventListener("click", deleteToDo);
+  span.innerText = text;
+  li.appendChild(span);
+  li.appendChild(delBtn);
+  li.id = newId;
+  toDoList.appendChild(li);
+  const toDoObj = {
+    text: text,
+    id: newId,
+  };
+  toDos.push(toDoObj);
+  saveToDos();
+}
+
+function handleSubmit(event) {
   event.preventDefault();
   const currentValue = toDoInput.value;
   paintToDo(currentValue);
   toDoInput.value = "";
 }
+
 function loadToDos() {
-  const toDos = localStorage.getItem(TODOS_LS);
-  if (toDos !== null) {
+  const loadedToDos = localStorage.getItem(TODOS_LS);
+  if (loadedToDos !== null) {
+    const parsedToDos = JSON.parse(loadedToDos);
+    parsedToDos.forEach(function (toDo) {
+      paintToDo(toDo.text);
+    });
   }
 }
 
 function init() {
   loadToDos();
-  toDoForm.addEventListener("submit", handelSubmit);
+  toDoForm.addEventListener("submit", handleSubmit);
 }
 
 init();

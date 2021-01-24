@@ -8,18 +8,30 @@
     <script src="clock.js" defer></script>
     <script src="gretting.js" defer></script>
     <script src="todo.js" defer></script>
+    <script src="bg.js" defer></script>
+    <script src="weather.js" defer></script>
+    <script
+      src="https://kit.fontawesome.com/7268dad3ac.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <div class="js-clock">
+    <div class="js-clock clock">
       <h1>00:00</h1>
     </div>
     <form action="" class="js-form form showing">
-      <input type="text" placeholder="What is your name?" />
+      <span>What is your name?</span>
+      <input class="nameInput" type="text" />
     </form>
     <h4 class="js-greetings greetings"></h4>
-    <form action="" class="js-toDoForm">
-      <input type="text" placeholder="What to do?" />
+    <form action="" class="js-toDoForm toDoForm">
+      <span>What do you need to do today?</span>
+      <input class="toDoInput" type="text" />
     </form>
-    <ul class="js-toDoList"></ul>
+    <ul class="js-toDoList toDoList">
+      <span class="toDoList__title">TODAY</span>
+    </ul>
+
+    <span class="js-weather weather"></span>
   </body>
 </html>
